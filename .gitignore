@@ -62,4 +62,4 @@ typings/
 
 .idea
 dist
-./src/icons/*.js
+src/icons/*.js
