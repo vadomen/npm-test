@@ -1,13 +1,31 @@
 {
-  "name": "npm-test",
+  "name": "npm-test-vadomen",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "config": {
+    "iconFolder": "src/icons"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublishOnly": "npm run buildPrepare && npm run buildSvg && npm run replaceColorSvg && npm run buildCleanSvg && npm run buildCleanSvgId && npm run cleanWidthSvg && npm run cleanHeightSvg && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "storybook": "npm run buildSvg && npm run buildCleanSvg && npm run replaceColorSvg && npm run buildCleanSvgId && npm run cleanWidthSvg && npm run cleanHeightSvg && start-storybook -p 9001 -c .storybook",
+    "buildPrepare": "rm -rf dist && mkdir -p dist",
+    "buildSvg": "svgr --icon --ext js --out-dir $npm_package_config_iconFolder $npm_package_config_iconFolder",
+    "buildCleanSvg": "for file in $npm_package_config_iconFolder/*.js; do sed -E -i '' 's/\"#?a\"/\"'$[RANDOM%8999]'\"/g' $file; done",
+    "buildCleanSvgId": "sed -i '' 's/xlinkHref=\"/xlinkHref=\"#/g' $npm_package_config_iconFolder/*.js",
+    "replaceColorSvg": "sed -i '' 's/\"#000\"/\"currentColor\"/g' $npm_package_config_iconFolder/*.js",
+    "cleanWidthSvg": "sed -i '' 's/width=\"1em\"/width=\"24px\"/g' $npm_package_config_iconFolder/*.js",
+    "cleanHeightSvg": "sed -i '' 's/height=\"1em\"/height=\"24px\"/g' $npm_package_config_iconFolder/*.js",
+    "build": "babel -d dist src",
+    "buildClean": "rm src/icons/*.svg"
   },
   "files": [
-    "src"
+    "dist",
+    "*.js",
+    "*.svg",
+    "*.jpg",
+    "*.png"
   ],
   "repository": {
     "type": "git",
@@ -17,6 +35,18 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/vadomen/npm-test/issues"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@storybook/react": "^3.4.10",
+    "@svgr/cli": "^2.2.0",
+    "babel-core": "^7.0.0-0",
+    "babel-plugin-inline-import-data-uri": "^1.0.1",
+    "babel-plugin-wildcard": "^2.0.0"
   },
   "homepage": "https://github.com/vadomen/npm-test#readme"
 }
